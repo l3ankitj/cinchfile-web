@@ -1,88 +1,62 @@
-'use client';
-
-import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
-import { ShieldCheck, ArrowRight, CheckCircle2 } from 'lucide-react'; // Optional: npm install lucide-react
-
-export default function LandingPage() {
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-
-  const handleJoinWaitlist = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-
-    setStatus('loading');
-    const { error } = await supabase.from('waitlist').insert([{ email }]);
-
-    if (error) {
-      console.error(error);
-      setStatus('error');
-    } else {
-      setStatus('success');
-      setEmail('');
-    }
-  };
-
+export default function Home() {
   return (
-    <div className="min-h-screen bg-white flex flex-col font-sans selection:bg-emerald-100 selection:text-emerald-900">
-      {/* 1. HERO SECTION */}
-      <main className="flex-grow flex flex-col items-center justify-center px-6 text-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-sm font-bold mb-8 border border-emerald-100">
-          <ShieldCheck size={16} />
-          <span>April Beta Now Open</span>
-        </div>
-
-        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-slate-900 mb-6">
-          Cinch<span className="text-emerald-500">file</span>
+    <div className="bg-white">
+      {/* Hero Section */}
+      <section className="px-6 py-24 lg:py-32 max-w-7xl mx-auto flex flex-col items-center text-center">
+        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 mb-6">
+          Stop Chasing <span className="text-blue-600">Missing Attachments.</span>
         </h1>
-
-        <p className="text-lg md:text-xl text-slate-500 max-w-xl leading-relaxed mb-10">
-          The "No-Login" document collector for modern bookkeepers. 
-          Secure, private, and effortlessly simple for your clients.
+        <p className="text-xl text-slate-600 max-w-2xl mb-10 leading-relaxed">
+          The secure, no-login document portal for US & UK Accountants. 
+          Collect sensitive files from clients via a private "Magic Link"—no passwords, no friction, just bank-grade security.
         </p>
-
-        {/* 2. WAITLIST FORM */}
-        <div className="w-full max-w-md">
-          {status === 'success' ? (
-            <div className="flex items-center justify-center gap-3 p-4 bg-emerald-50 text-emerald-700 rounded-2xl border border-emerald-100 animate-in fade-in zoom-in duration-300">
-              <CheckCircle2 size={24} />
-              <span className="font-semibold">Success! We'll be in touch soon.</span>
-            </div>
-          ) : (
-            <form onSubmit={handleJoinWaitlist} className="flex flex-col gap-3">
-              <input
-                type="email"
-                placeholder="Enter your professional email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-5 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all text-slate-900 placeholder:text-slate-400"
-              />
-              <button
-                type="submit"
-                disabled={status === 'loading'}
-                className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 active:scale-[0.98] text-white font-bold rounded-2xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-70"
-              >
-                {status === 'loading' ? 'Processing...' : 'Join the Waitlist'}
-                <ArrowRight size={18} />
-              </button>
-            </form>
-          )}
-          {status === 'error' && (
-            <p className="mt-4 text-red-500 text-sm font-medium">Something went wrong. Please try again.</p>
-          )}
+        
+        <div className="flex flex-col sm:flex-row gap-4">
+          <a href="mailto:ankit@cinchfile.com?subject=Early Access" 
+             className="px-8 py-4 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-all shadow-lg shadow-blue-200">
+            Get Early Access ($39/mo)
+          </a>
+          <a href="#how-it-works" 
+             className="px-8 py-4 bg-white text-slate-900 font-bold rounded-lg border border-slate-200 hover:border-slate-300 transition-all">
+            See How it Works
+          </a>
         </div>
-      </main>
 
-      {/* 3. FOOTER */}
-      <footer className="py-8 text-center text-sm text-slate-400 font-medium border-t border-slate-50">
-        <div className="flex justify-center gap-6 mb-2">
-          <a href="/privacy" className="hover:text-emerald-500 transition-colors">Privacy</a>
-          <a href="/terms" className="hover:text-emerald-500 transition-colors">Terms</a>
+        {/* Trust Badge Section */}
+        <div className="mt-20 pt-10 border-t border-slate-100 w-full">
+          <p className="text-sm font-semibold uppercase tracking-widest text-slate-400 mb-8">
+            Security & Compliance
+          </p>
+          <div className="flex flex-wrap justify-center gap-8 opacity-60 grayscale">
+             {/* We use text here to represent logos of security standards */}
+             <span className="font-bold text-lg">AES-256 Encrypted</span>
+             <span className="font-bold text-lg">GDPR Compliant</span>
+             <span className="font-bold text-lg">CCPA Ready</span>
+             <span className="font-bold text-lg">SSL Secured</span>
+          </div>
         </div>
-        <p>&copy; 2026 Cinchfile. All rights reserved.</p>
-      </footer>
+      </section>
+
+      {/* How it Works Section */}
+      <section id="how-it-works" className="bg-slate-50 py-24 px-6">
+        <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-12">
+          <div className="text-center">
+            <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-xl">1</div>
+            <h3 className="text-xl font-bold mb-2">Generate Link</h3>
+            <p className="text-slate-600">Create a unique, private link for your client in 2 seconds.</p>
+          </div>
+          <div className="text-center">
+            <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-xl">2</div>
+            <h3 className="text-xl font-bold mb-2">Client Uploads</h3>
+            <p className="text-slate-600">They tap the link and drop files. No login, no password, no friction.</p>
+          </div>
+          <div className="text-center">
+            <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-xl">3</div>
+            <h3 className="text-xl font-bold mb-2">Instant Notify</h3>
+            <p className="text-slate-600">Files land in your encrypted vault. You get an email. Done.</p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
