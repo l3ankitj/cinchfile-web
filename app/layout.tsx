@@ -59,11 +59,11 @@ export default function RootLayout({
               </Link>
               
               <Link 
-                href="mailto:ankit@cinchfile.com" 
-                className="hidden sm:block px-6 py-2.5 bg-slate-900 text-white text-sm font-black rounded-2xl hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-200 transition-all active:scale-95"
-              >
-                Try Cinchfile
-              </Link>
+  href="mailto:ankit@cinchfile.com?subject=Interested in Cinchfile Early Access" 
+  className="..."
+>
+  Try Cinchfile
+</Link>
             </div>
           </nav>
         </header>
