@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cinchfile
 
-## Getting Started
+Next.js app for solo CPAs and small firms: create **upload requests**, share a **passwordless client link** (`/u/[id]`), receive **multi-file uploads**, and **download** from the admin dashboard only.
 
-First, run the development server:
+## Stack
+
+- **Next.js** (App Router), **TypeScript**, **Tailwind CSS**
+- **Supabase** (Postgres + Auth + Storage)
+- **Resend** (optional transactional email on upload complete)
+- **Vercel** (recommended hosting; **@vercel/analytics** included)
+
+## Setup
+
+1. **Clone and install**
+
+   ```bash
+   npm install
+   ```
+
+2. **Supabase**
+
+   - Create a project at [supabase.com](https://supabase.com).
+   - In **SQL Editor**, run the migration in [`supabase/migrations/001_cinchfile_schema.sql`](supabase/migrations/001_cinchfile_schema.sql).
+   - Create a **private** storage bucket named `client-uploads` (no public access). Uploads are performed with the service role from API routes only.
+   - Under **Authentication → Users**, create your founder user (email + password), or use sign-up if you enable it in the Supabase dashboard.
+
+3. **Environment variables**
+
+   Copy `.env.example` to `.env.local` and fill in:
+
+   | Variable | Notes |
+   |----------|--------|
+   | `NEXT_PUBLIC_SUPABASE_URL` | Project URL |
+   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Anon key (browser) |
+   | `SUPABASE_SERVICE_ROLE_KEY` | **Server only** — portal upload API and signed URLs |
+   | `RESEND_API_KEY` | Optional; omit locally to skip email |
+   | `NOTIFICATION_TO` | Your inbox for “upload complete” mail |
+   | `NOTIFICATION_FROM` | Verified sender in Resend (use `onboarding@resend.dev` for tests) |
+
+4. **Logo**
+
+   Replace [`public/logo.png`](public/logo.png) with your final asset (same path/name).
+
+5. **Run**
+
+   ```bash
+   npm run dev
+   ```
+
+   - Marketing site: `/`
+   - Firm login: `/login`
+   - Admin: `/admin` (requires session)
+
+## Deploying on Vercel
+
+1. Push the repo to GitHub/GitLab/Bitbucket and **Import** the project in [Vercel](https://vercel.com).
+2. Add the same env vars in **Project → Settings → Environment Variables** (use **Production** and **Preview** as needed). **Do not** expose `SUPABASE_SERVICE_ROLE_KEY` to the client.
+3. Deploy. Default URL will be `https://<project>.vercel.app`.
+
+### Custom domain and DNS
+
+1. Buy a domain from any registrar (Namecheap, Google Domains, etc.).
+2. In Vercel: **Project → Settings → Domains → Add**. Vercel shows **DNS records** (usually `A` / `CNAME`).
+3. At your registrar, create those records. SSL certificates are issued automatically once DNS propagates (often minutes to a few hours).
+
+### Analytics
+
+[@vercel/analytics](https://vercel.com/docs/analytics) is wired in [`app/layout.tsx`](app/layout.tsx). It is active when deployed on Vercel. For a privacy-first alternative (e.g. Plausible), swap or add it per their docs.
+
+## Security notes
+
+- **Never** commit `.env.local` or the service role key.
+- Rotate keys immediately if they leak.
+- RLS policies in the migration scope firm data to `auth.uid()`. Portal traffic uses **server-side** routes with the **service role** after validation (no public password in the client bundle).
+
+## Accessibility and browsers (release checklist)
+
+- Keyboard: tab through header, login form, admin table actions, and client upload control.
+- Focus: visible focus styles on interactive elements.
+- Color: do not rely on color alone for errors (copy + `role="alert"` where used).
+- Browsers: smoke-test current **Chrome, Edge, Firefox, Safari** (last two major versions).
+
+## Scripts
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev    # development
+npm run build  # production build
+npm run start  # run production build locally
+npm run lint   # ESLint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Legal
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Privacy and terms pages are **starter copy**, not legal advice. Have them reviewed before broad launch or regulated data at scale.

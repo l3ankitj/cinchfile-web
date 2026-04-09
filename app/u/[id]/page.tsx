@@ -1,150 +1,293 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
-import { Shield, Upload, CheckCircle, AlertCircle, FileText } from 'lucide-react';
+import { useCallback, useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import {
+  Shield,
+  Upload,
+  CheckCircle,
+  AlertCircle,
+  FileText,
+  X,
+} from "lucide-react";
+import {
+  MAX_FILE_BYTES,
+  MAX_TOTAL_BYTES,
+} from "@/lib/constants";
+import Link from "next/link";
+
+function mergeIncomingFiles(
+  prev: File[],
+  incoming: File[]
+): { files: File[]; error: string | null } {
+  const next = [...prev];
+  let err: string | null = null;
+  for (const f of incoming) {
+    if (f.size > MAX_FILE_BYTES) {
+      err = `Each file must be at most ${Math.round(MAX_FILE_BYTES / (1024 * 1024))} MB.`;
+      continue;
+    }
+    next.push(f);
+  }
+  const total = next.reduce((s, f) => s + f.size, 0);
+  if (total > MAX_TOTAL_BYTES) {
+    return {
+      files: prev,
+      error: `Total size must be at most ${Math.round(MAX_TOTAL_BYTES / (1024 * 1024))} MB. Remove some files.`,
+    };
+  }
+  return { files: next, error: err };
+}
+
+type PortalMeta = {
+  id: string;
+  client_name: string;
+  firm_name: string;
+};
 
 export default function ClientPortal() {
   const params = useParams();
   const requestId = params.id as string;
 
-  const [request, setRequest] = useState<any>(null);
-  const [file, setFile] = useState<File | null>(null);
-  const [status, setStatus] = useState<'loading' | 'idle' | 'uploading' | 'success' | 'error'>('loading');
+  const [meta, setMeta] = useState<PortalMeta | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
+  const [status, setStatus] = useState<
+    "loading" | "idle" | "uploading" | "success" | "error"
+  >("loading");
+  const [errorDetail, setErrorDetail] = useState<string | null>(null);
 
-  // 1. FETCH THE REQUEST DETAILS
   useEffect(() => {
-    const loadRequest = async () => {
-      const { data, error } = await supabase
-        .from('upload_requests')
-        .select('*')
-        .eq('id', requestId)
-        .single();
-
-      if (error || !data || data.status === 'completed') {
-        setStatus('error');
-      } else {
-        setRequest(data);
-        setStatus('idle');
+    const load = async () => {
+      const res = await fetch(`/api/portal/${requestId}`);
+      if (res.status === 404 || res.status === 410) {
+        setStatus("error");
+        return;
       }
+      if (!res.ok) {
+        setStatus("error");
+        return;
+      }
+      const data = (await res.json()) as PortalMeta;
+      setMeta(data);
+      setStatus("idle");
     };
-    if (requestId) loadRequest();
+    if (requestId) void load();
   }, [requestId]);
 
-  // 2. HANDLE THE UPLOAD
-  const handleUpload = async () => {
-    if (!file || !request) return;
+  const addFiles = useCallback((incoming: FileList | File[]) => {
+    const list = Array.from(incoming);
+    setFiles((prev) => {
+      const r = mergeIncomingFiles(prev, list);
+      queueMicrotask(() => setErrorDetail(r.error));
+      return r.files;
+    });
+  }, []);
 
-    setStatus('uploading');
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${request.id}/${Date.now()}.${fileExt}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from('client-uploads')
-      .upload(fileName, file);
-
-    if (uploadError) {
-      setStatus('idle');
-      alert('Upload failed. Please try again.');
-      return;
-    }
-
-    // Update database status
-    await supabase
-      .from('upload_requests')
-      .update({ status: 'completed', file_path: fileName })
-      .eq('id', request.id);
-
-    setStatus('success');
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.length) addFiles(e.target.files);
+    e.target.value = "";
   };
 
-  if (status === 'loading') return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-400 font-medium animate-pulse">
-      Establishing secure connection...
-    </div>
-  );
+  const onDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.dataTransfer.files?.length) addFiles(e.dataTransfer.files);
+  };
 
-  if (status === 'error') return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
-      <div className="bg-white p-8 rounded-3xl shadow-xl max-w-sm text-center border border-slate-100">
-        <AlertCircle size={48} className="text-orange-500 mx-auto mb-4" />
-        <h1 className="text-xl font-bold text-slate-900 mb-2">Link Invalid or Expired</h1>
-        <p className="text-slate-500 mb-6 text-sm leading-relaxed">This document request has already been completed or the link has expired. Please contact your specialist for a new link.</p>
-        <a href="/" className="text-emerald-500 font-bold hover:underline">Go to Cinchfile</a>
+  const onDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const removeAt = (idx: number) => {
+    setFiles((prev) => prev.filter((_, i) => i !== idx));
+    setErrorDetail(null);
+  };
+
+  const handleUpload = async () => {
+    if (!meta || files.length === 0) return;
+    setStatus("uploading");
+    setErrorDetail(null);
+    const fd = new FormData();
+    files.forEach((f) => fd.append("files", f));
+    try {
+      const res = await fetch(`/api/portal/${requestId}/upload`, {
+        method: "POST",
+        body: fd,
+      });
+      const body = (await res.json().catch(() => ({}))) as {
+        error?: string;
+        detail?: string;
+      };
+      if (!res.ok) {
+        setStatus("idle");
+        setErrorDetail(body.detail || body.error || "Upload failed.");
+        return;
+      }
+      setStatus("success");
+    } catch {
+      setStatus("idle");
+      setErrorDetail("Network error. Please try again.");
+    }
+  };
+
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-400 font-medium animate-pulse">
+        Establishing secure connection…
       </div>
-    </div>
-  );
+    );
+  }
 
-  if (status === 'success') return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
-      <div className="bg-white p-10 rounded-3xl shadow-xl max-w-md text-center border border-slate-100 animate-in fade-in zoom-in duration-500">
-        <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
-          <CheckCircle size={40} />
+  if (status === "error" || !meta) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
+        <div className="bg-white p-8 rounded-3xl shadow-xl max-w-sm text-center border border-slate-100">
+          <AlertCircle
+            size={48}
+            className="text-orange-500 mx-auto mb-4"
+            aria-hidden
+          />
+          <h1 className="text-xl font-bold text-slate-900 mb-2">
+            Link unavailable
+          </h1>
+          <p className="text-slate-500 mb-6 text-sm leading-relaxed">
+            This request was already completed, or the link expired. Ask your
+            contact for a new upload link if you need to send more files.
+          </p>
+          <Link
+            href="/"
+            className="text-emerald-600 font-bold hover:underline focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-emerald-600 rounded"
+          >
+            Cinchfile home
+          </Link>
         </div>
-        <h1 className="text-2xl font-bold text-slate-900 mb-2">Transfer Complete</h1>
-        <p className="text-slate-500 leading-relaxed">Your documents were encrypted and delivered successfully to <strong>{request.firm_name}</strong>. You can safely close this window.</p>
       </div>
-    </div>
-  );
+    );
+  }
+
+  if (status === "success") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
+        <div className="bg-white p-10 rounded-3xl shadow-xl max-w-md text-center border border-slate-100">
+          <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle size={40} aria-hidden />
+          </div>
+          <h1 className="text-2xl font-bold text-slate-900 mb-2">
+            Thank you
+          </h1>
+          <p className="text-slate-500 leading-relaxed">
+            Your files were sent to <strong>{meta.firm_name}</strong>. You can
+            close this window. If you need to send more documents later, your
+            contact will send you a new link.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const totalBytes = files.reduce((s, f) => s + f.size, 0);
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 selection:bg-emerald-100">
+    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-md bg-white p-8 rounded-[32px] shadow-2xl shadow-slate-200/50 border border-slate-100">
-        {/* BRANDING */}
         <div className="flex justify-center mb-8">
-          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-100">
-            <Shield size={14} />
-            <span>End-to-End Encrypted</span>
+          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-800 text-xs font-bold border border-emerald-100">
+            <Shield size={14} aria-hidden />
+            <span>Secure transfer (TLS)</span>
           </div>
         </div>
 
         <div className="text-center mb-8">
-          <span className="text-xs font-bold text-emerald-500 uppercase tracking-widest block mb-2">{request.firm_name}</span>
-          <h1 className="text-2xl font-extrabold text-slate-900">Hi {request.client_name},</h1>
-          <p className="text-slate-500 text-sm mt-2">Please upload the requested documents below.</p>
+          <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest block mb-2">
+            {meta.firm_name}
+          </span>
+          <h1 className="text-2xl font-extrabold text-slate-900">
+            Hi {meta.client_name},
+          </h1>
+          <p className="text-slate-500 text-sm mt-2">
+            Upload the requested documents. PDF or images, up to{" "}
+            {Math.round(MAX_FILE_BYTES / (1024 * 1024))} MB each (
+            {Math.round(MAX_TOTAL_BYTES / (1024 * 1024))} MB total).
+          </p>
         </div>
 
-        {/* UPLOAD ZONE */}
-        <div 
-          onClick={() => document.getElementById('file-input')?.click()}
-          className={`relative group cursor-pointer border-2 border-dashed rounded-2xl p-10 transition-all text-center
-            ${file ? 'border-emerald-500 bg-emerald-50/30' : 'border-slate-200 hover:border-emerald-400 bg-slate-50/50'}`}
+        <div
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+          className="border-2 border-dashed rounded-2xl p-8 transition-all text-center border-slate-200 hover:border-emerald-400 bg-slate-50/50"
         >
-          <input 
-            type="file" 
-            id="file-input" 
-            className="hidden" 
-            onChange={(e) => setFile(e.target.files?.[0] || null)}
+          <input
+            type="file"
+            id="file-input"
+            className="sr-only"
+            multiple
+            accept=".pdf,.jpg,.jpeg,.png,.webp,image/*,application/pdf"
+            onChange={onInputChange}
           />
-          
-          <div className="flex flex-col items-center">
-            {file ? (
-              <>
-                <FileText size={32} className="text-emerald-500 mb-3" />
-                <span className="text-sm font-bold text-slate-900 truncate max-w-[200px]">{file.name}</span>
-                <span className="text-xs text-emerald-600 mt-1">Ready to send</span>
-              </>
-            ) : (
-              <>
-                <Upload size={32} className="text-slate-300 group-hover:text-emerald-400 mb-3 transition-colors" />
-                <span className="text-sm font-bold text-slate-600">Select your file</span>
-                <span className="text-xs text-slate-400 mt-1">PDF, JPG, or PNG (Max 10MB)</span>
-              </>
-            )}
+          <div className="flex flex-col items-center gap-3">
+            <Upload
+              size={32}
+              className="text-slate-300"
+              aria-hidden
+            />
+            <button
+              type="button"
+              onClick={() => document.getElementById("file-input")?.click()}
+              className="text-sm font-bold text-emerald-700 hover:underline focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-emerald-600 rounded"
+            >
+              Choose files
+            </button>
+            <span className="text-xs text-slate-400">or drag and drop here</span>
           </div>
         </div>
 
+        {files.length > 0 && (
+          <ul className="mt-6 space-y-2 max-h-48 overflow-y-auto" aria-label="Selected files">
+            {files.map((f, i) => (
+              <li
+                key={`${f.name}-${i}`}
+                className="flex items-center justify-between gap-2 text-sm bg-slate-50 rounded-xl px-3 py-2 border border-slate-100"
+              >
+                <span className="flex items-center gap-2 min-w-0">
+                  <FileText className="shrink-0 text-emerald-600" size={18} aria-hidden />
+                  <span className="truncate text-slate-800">{f.name}</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => removeAt(i)}
+                  className="shrink-0 p-1 text-slate-400 hover:text-red-600 rounded focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-red-600"
+                  aria-label={`Remove ${f.name}`}
+                >
+                  <X size={18} aria-hidden />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {errorDetail && (
+          <p className="mt-4 text-sm text-red-600" role="alert">
+            {errorDetail}
+          </p>
+        )}
+
+        <p className="text-xs text-slate-500 mt-4">
+          Total: {(totalBytes / (1024 * 1024)).toFixed(2)} MB /{" "}
+          {MAX_TOTAL_BYTES / (1024 * 1024)} MB
+        </p>
+
         <button
-          onClick={handleUpload}
-          disabled={!file || status === 'uploading'}
-          className="w-full mt-8 py-4 bg-emerald-500 text-white font-bold rounded-2xl shadow-lg shadow-emerald-500/20 hover:bg-emerald-600 active:scale-[0.98] transition-all disabled:opacity-50 disabled:shadow-none"
+          type="button"
+          onClick={() => void handleUpload()}
+          disabled={files.length === 0 || status === "uploading"}
+          className="w-full mt-6 py-4 bg-emerald-600 text-white font-bold rounded-2xl shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 active:scale-[0.98] transition-all disabled:opacity-50 disabled:shadow-none focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-emerald-800"
         >
-          {status === 'uploading' ? 'Encrypting & Sending...' : 'Upload Securely'}
+          {status === "uploading" ? "Uploading…" : "Send securely"}
         </button>
 
         <p className="text-center text-[10px] text-slate-400 mt-6 uppercase tracking-tighter font-bold">
-          Powered by Cinchfile Security Stack
+          Powered by Cinchfile
         </p>
       </div>
     </div>
