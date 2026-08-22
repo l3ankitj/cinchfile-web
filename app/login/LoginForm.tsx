@@ -56,10 +56,9 @@ export default function LoginForm() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
       <div className="w-full max-w-md rounded-2xl bg-white p-10 shadow-xl border border-slate-200">
-        <h1 className="text-2xl font-bold text-slate-900 mb-2">Firm sign in</h1>
+        <h1 className="text-2xl font-bold text-slate-900 mb-2">Staff sign in</h1>
         <p className="text-slate-500 text-sm mb-8">
-          Access your Cinchfile dashboard. Client upload links stay passwordless
-          for your clients.
+          Access the Cinchfile fulfillment dashboard.
         </p>
         <form onSubmit={(e) => void onSubmit(e)} className="space-y-4">
           <div>

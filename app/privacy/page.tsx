@@ -1,45 +1,58 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ShieldCheck } from "lucide-react";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Cinchfile",
-  description:
-    "How Cinchfile handles data when you use the service with Supabase and Vercel.",
+  description: "How Cinchfile handles your files and personal data when you place a print order.",
 };
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-[#f8fafc] text-slate-800 p-8 pb-24">
-      <div className="max-w-2xl mx-auto">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 mb-8 text-blue-600 font-bold text-xl focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-blue-600 rounded"
-        >
-          <ShieldCheck className="w-8 h-8" aria-hidden />
-          Cinchfile
-        </Link>
-        <h1 className="text-3xl font-bold mb-6 text-slate-900">Privacy Policy</h1>
-        <div className="text-slate-600 leading-relaxed space-y-4 text-sm md:text-base">
-          <p>Last updated: April 2026</p>
+    <div className="max-w-2xl mx-auto px-6 py-16">
+      <Link href="/" className="inline-flex items-center gap-2 mb-8 font-black text-xl text-foreground">
+        <Image src="/logo.png" alt="" width={28} height={28} className="object-contain" />
+        Cinchfile
+      </Link>
+      <h1 className="text-3xl font-bold mb-2 text-foreground">Privacy Policy</h1>
+      <p className="text-sm text-muted mb-8">Last updated: August 2026</p>
+
+      <div className="space-y-6 text-foreground/90 leading-relaxed">
+        <section>
+          <h2 className="font-bold text-foreground mb-2">What we collect</h2>
           <p>
-            Cinchfile helps you collect files from clients using upload links.
-            The application runs on Vercel and stores data in your Supabase
-            project. Traffic between browsers and the app uses HTTPS (TLS).
-            Storage encryption and backups depend on your Supabase plan and
-            configuration—review Supabase documentation for details.
+            To fulfil an order we collect your name, phone number, delivery address,
+            and (optionally) email, along with the files you upload for printing.
+            Payment is processed by Razorpay — we do not store your card, UPI, or
+            bank details ourselves.
           </p>
+        </section>
+        <section>
+          <h2 className="font-bold text-foreground mb-2">Your files</h2>
           <p>
-            Access to uploaded files is limited to your signed-in firm account
-            in the admin dashboard. Clients do not create accounts; they use a
-            link you generate.
+            Uploaded files are transferred over an encrypted (HTTPS) connection and
+            stored in a private cloud storage bucket accessible only to staff
+            fulfilling your order. Files are automatically deleted 24 hours after
+            your order is marked complete.
           </p>
+        </section>
+        <section>
+          <h2 className="font-bold text-foreground mb-2">Order tracking</h2>
           <p>
-            This policy is not legal advice. Before handling regulated personal
-            data at scale, consult qualified counsel and configure retention and
-            agreements to match your practice.
+            Your order number and phone number are used to let you look up order
+            status without creating an account. Don&apos;t share your order number
+            and phone number combination with anyone you don&apos;t want to see
+            your order status.
           </p>
-        </div>
+        </section>
+        <section>
+          <h2 className="font-bold text-foreground mb-2">Not legal advice</h2>
+          <p>
+            This is starter policy language, not legal advice. Have it reviewed by
+            qualified counsel before relying on it for a live business, especially
+            around payment data handling and applicable data protection law.
+          </p>
+        </section>
       </div>
     </div>
   );

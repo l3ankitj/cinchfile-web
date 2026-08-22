@@ -10,3 +10,11 @@ export async function logSignInEvent() {
   } = await supabase.auth.getUser();
   if (user) await logAudit(user.id, "sign_in", {});
 }
+
+export async function logSignOutEvent() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (user) await logAudit(user.id, "sign_out", {});
+}

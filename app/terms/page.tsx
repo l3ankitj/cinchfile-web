@@ -1,41 +1,64 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ShieldCheck } from "lucide-react";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Terms of Service | Cinchfile",
-  description: "Terms for using the Cinchfile application.",
+  description: "Terms for placing and fulfilling a print order with Cinchfile.",
 };
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-[#f8fafc] text-slate-800 p-8 pb-24">
-      <div className="max-w-2xl mx-auto">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 mb-8 text-blue-600 font-bold text-xl focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-blue-600 rounded"
-        >
-          <ShieldCheck className="w-8 h-8" aria-hidden />
-          Cinchfile
-        </Link>
-        <h1 className="text-3xl font-bold mb-6 text-slate-900">Terms of Service</h1>
-        <div className="text-slate-600 leading-relaxed space-y-4 text-sm md:text-base">
-          <p>Last updated: April 2026</p>
+    <div className="max-w-2xl mx-auto px-6 py-16">
+      <Link href="/" className="inline-flex items-center gap-2 mb-8 font-black text-xl text-foreground">
+        <Image src="/logo.png" alt="" width={28} height={28} className="object-contain" />
+        Cinchfile
+      </Link>
+      <h1 className="text-3xl font-bold mb-2 text-foreground">Terms of Service</h1>
+      <p className="text-sm text-muted mb-8">Last updated: August 2026</p>
+
+      <div className="space-y-6 text-foreground/90 leading-relaxed">
+        <section>
+          <h2 className="font-bold text-foreground mb-2">Orders and pricing</h2>
           <p>
-            By using Cinchfile you agree not to use the service for unlawful
-            file sharing, malware distribution, or other abusive activity.
+            Prices shown at checkout are calculated from the page count, paper,
+            print type, binding, copies, and delivery pincode you provide, and are
+            final once payment is confirmed. You are responsible for the accuracy
+            of the page count and print settings you submit.
           </p>
+        </section>
+        <section>
+          <h2 className="font-bold text-foreground mb-2">Payment</h2>
           <p>
-            The software is provided &quot;as is&quot; without warranties. You
-            are responsible for your professional obligations, client
-            agreements, and compliance with applicable laws.
+            Payments are processed by Razorpay. An order is confirmed only once
+            payment is verified; unpaid draft orders and their uploaded files are
+            automatically removed after a short period.
           </p>
+        </section>
+        <section>
+          <h2 className="font-bold text-foreground mb-2">Acceptable use</h2>
           <p>
-            These terms are not a substitute for advice from a qualified
-            attorney. Update them when you form a legal entity or change how
-            you operate the product.
+            You agree not to upload content you don&apos;t have the right to print
+            and distribute, or use the service for unlawful, infringing, or abusive
+            purposes.
           </p>
-        </div>
+        </section>
+        <section>
+          <h2 className="font-bold text-foreground mb-2">Delivery &amp; refunds</h2>
+          <p>
+            Delivery estimates shown at checkout are estimates, not guarantees.
+            Refund and cancellation terms for a paid order should be added here
+            once finalized for your business.
+          </p>
+        </section>
+        <section>
+          <h2 className="font-bold text-foreground mb-2">Not legal advice</h2>
+          <p>
+            This is starter policy language, not legal advice. Have it reviewed by
+            qualified counsel — particularly the refund/cancellation and
+            liability sections — before relying on it for a live business.
+          </p>
+        </section>
       </div>
     </div>
   );
