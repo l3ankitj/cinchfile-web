@@ -7,6 +7,8 @@ import {
   RATE_TABLE_PAISE,
   formatPaise,
 } from "@/lib/pricing";
+import { buildBreadcrumbJsonLd, JsonLdScript } from "@/lib/jsonLd";
+import { SITE_URL } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
   title: "Pricing & Rate Card | Cinchfile",
@@ -23,8 +25,44 @@ const BINDING_LABELS: Record<string, string> = {
 };
 
 export default function PricingPage() {
+  const offers = PAPER_OPTIONS.flatMap(({ gsm, label }) => {
+    const row = RATE_TABLE_PAISE[gsm];
+    const entries: { name: string; pricePaise: number }[] = [
+      { name: `${label} — B&W, double-sided, per page`, pricePaise: row.bw.double! },
+      { name: `${label} — B&W, single-sided, per page`, pricePaise: row.bw.single! },
+    ];
+    if (row.color.double !== null) {
+      entries.push({ name: `${label} — Color, double-sided, per page`, pricePaise: row.color.double });
+    }
+    if (row.color.single !== null) {
+      entries.push({ name: `${label} — Color, single-sided, per page`, pricePaise: row.color.single });
+    }
+    return entries;
+  });
+
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: "Cinchfile Printing Service",
+    description:
+      "Per-page document printing with paper weight, color, and binding options, delivered across India.",
+    brand: { "@type": "Brand", name: "Cinchfile" },
+    offers: offers.map((o) => ({
+      "@type": "Offer",
+      name: o.name,
+      price: (o.pricePaise / 100).toFixed(2),
+      priceCurrency: "INR",
+      availability: "https://schema.org/InStock",
+      url: `${SITE_URL}/pricing`,
+    })),
+  };
+
   return (
     <div className="max-w-5xl mx-auto px-6 py-16">
+      <JsonLdScript data={productJsonLd} />
+      <JsonLdScript
+        data={buildBreadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Pricing" }])}
+      />
       <p className="text-sm font-bold text-accent-text uppercase tracking-wide mb-3">
         Transparent Rates
       </p>
