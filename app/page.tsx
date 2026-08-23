@@ -203,6 +203,30 @@ export default function Home() {
 
       {/* How it works */}
       <section className="px-6 max-w-5xl mx-auto w-full">
+        <JsonLdScript
+          data={{
+            "@context": "https://schema.org",
+            "@type": "HowTo",
+            name: "How to order printing on Cinchfile",
+            step: [
+              {
+                "@type": "HowToStep",
+                name: "Upload your files",
+                text: "No account required. Drop your PDF, Word, or image files — we verify them before printing.",
+              },
+              {
+                "@type": "HowToStep",
+                name: "Choose paper & binding",
+                text: "Pick your weight, print type, and binding. See the exact total before you pay.",
+              },
+              {
+                "@type": "HowToStep",
+                name: "Doorstep delivery",
+                text: "Printed and packed carefully, then shipped pan-India in 2–7 business days.",
+              },
+            ],
+          }}
+        />
         <p className="text-sm font-bold text-accent-text uppercase tracking-wide text-center mb-2">
           How it works
         </p>
