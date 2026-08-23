@@ -5,6 +5,7 @@ import { COMPARISONS } from "@/lib/data/comparisons";
 export const metadata: Metadata = {
   title: "Compare Printing Options | Cinchfile",
   description: "How Cinchfile compares to local shops, campus print centers, and printing at home.",
+  alternates: { canonical: "/compare" },
 };
 
 export default function CompareIndexPage() {

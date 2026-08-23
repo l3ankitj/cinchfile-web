@@ -7,6 +7,7 @@ import { STATES } from "@/lib/data/states";
 export const metadata: Metadata = {
   title: "Cities We Deliver To | Cinchfile",
   description: "Doorstep print delivery across Indian cities and states.",
+  alternates: { canonical: "/print" },
 };
 
 export default function PrintCitiesIndexPage() {

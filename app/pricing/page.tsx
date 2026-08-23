@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: "Pricing & Rate Card | Cinchfile",
   description:
     "Transparent per-page printing rates by paper weight, plus binding add-ons and delivery. No hidden charges — see the full rate card before you order.",
+  alternates: { canonical: "/pricing" },
 };
 
 const BINDING_LABELS: Record<string, string> = {

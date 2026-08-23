@@ -4,6 +4,7 @@ import ContactForm from "./ContactForm";
 export const metadata: Metadata = {
   title: "Contact Support | Cinchfile",
   description: "Get in touch about an order, pricing, or anything else.",
+  alternates: { canonical: "/contact" },
 };
 
 export default function ContactPage() {

@@ -4,6 +4,7 @@ import TrackForm from "./TrackForm";
 export const metadata: Metadata = {
   title: "Track Your Order | Cinchfile",
   description: "Enter your order number and mobile number to see live status updates.",
+  alternates: { canonical: "/track" },
 };
 
 export default function TrackPage() {

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { EXAM_NOTES, getExamNotesBySlug } from "@/lib/data/examNotes";
+import { buildBreadcrumbJsonLd, JsonLdScript } from "@/lib/jsonLd";
 
 export const dynamicParams = false;
 
@@ -20,6 +21,7 @@ export async function generateMetadata({
   return {
     title: `${data.examName} Notes Printing | Cinchfile`,
     description: data.intro,
+    alternates: { canonical: `/notes/${data.slug}` },
   };
 }
 
@@ -34,6 +36,13 @@ export default async function ExamNotesPage({
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-16">
+      <JsonLdScript
+        data={buildBreadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Exam Notes Printing", path: "/notes" },
+          { name: data.examName },
+        ])}
+      />
       <p className="text-sm font-bold text-accent-text uppercase tracking-wide mb-3">
         Competitive Exams
       </p>

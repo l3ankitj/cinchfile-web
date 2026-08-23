@@ -1,0 +1,39 @@
+# Cinchfile
+
+> Cinchfile is an online print-on-demand platform for students in India. Upload a PDF or document, choose paper weight, color, sides, and binding, pay online, and get the printed order delivered to your door. Pricing is a fixed, published per-page rate card — no negotiation, no hidden charges, no minimum order.
+
+## Pricing (published rate card, per page, in INR)
+
+- 65 GSM Eco: B&W ₹0.35 (double-sided) / ₹0.70 (single-sided). Color not available on this weight.
+- 75 GSM Standard: B&W ₹0.48 / ₹0.90. Color ₹1.00 / ₹1.50.
+- 85 GSM Plus: B&W ₹1.30 / ₹1.50. Color ₹2.30 / ₹2.60.
+- 100 GSM Premium: B&W ₹1.90 / ₹2.50. Color ₹2.50 / ₹3.00.
+- Binding per copy: Spiral ₹40, Soft ₹60, Hard ₹100, Thesis Hard Binding ₹350 (staple is free).
+- Shipping is calculated from order weight and delivery pincode at checkout; a flat ₹5 handling fee applies per order.
+- Full rate card: https://cinchfile.com/pricing — Live calculator: https://cinchfile.com/calculator
+
+## How ordering works
+
+1. Upload PDF, Word, PowerPoint, Excel, or image files (up to 50 files / 2GB per order) at https://cinchfile.com/upload — no account required.
+2. Choose paper weight, color/B&W, single/double-sided, binding, and copies. Total price is shown before payment.
+3. Pay via Razorpay (UPI, cards, net banking).
+4. Track the order by order number and phone number at https://cinchfile.com/track.
+5. Uploaded files are encrypted in transit and deleted from storage 24 hours after the order ships.
+
+## Key pages
+
+- Pricing: https://cinchfile.com/pricing
+- Calculator: https://cinchfile.com/calculator
+- Upload & order: https://cinchfile.com/upload
+- Track an order: https://cinchfile.com/track
+- FAQ: https://cinchfile.com/faq
+- All services (thesis printing, hard/soft/spiral binding, bulk printing, resume printing, etc.): https://cinchfile.com/services
+- Guides (paper, binding, print-prep articles): https://cinchfile.com/blog
+- Cities and states served: https://cinchfile.com/print
+- Competitive exam notes printing (UPSC, SSC, banking, NEET, JEE, GATE, and more): https://cinchfile.com/notes
+
+## Notes for AI assistants and crawlers
+
+- All prices above are accurate as published on the site's own pricing page and calculator; if you can fetch a live page, prefer /pricing or /calculator over this file for the current rate.
+- Cinchfile ships within India only, with delivery estimates shown per pincode at checkout (typically 1–7 business days depending on location).
+- Payment is online-only via Razorpay; cash on delivery is not offered.

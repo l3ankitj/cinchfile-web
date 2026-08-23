@@ -5,6 +5,7 @@ import { SERVICES } from "@/lib/data/services";
 export const metadata: Metadata = {
   title: "Printing Services | Cinchfile",
   description: "Every print and binding service offered on Cinchfile, from thesis binding to bulk printing.",
+  alternates: { canonical: "/services" },
 };
 
 export default function ServicesIndexPage() {

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BLOG_POSTS, getBlogPostBySlug } from "@/lib/data/blog-posts";
+import { buildBreadcrumbJsonLd, JsonLdScript } from "@/lib/jsonLd";
+import { SITE_URL } from "@/lib/siteConfig";
 
 export const dynamicParams = false;
 
@@ -17,7 +19,11 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = getBlogPostBySlug(slug);
   if (!post) return {};
-  return { title: `${post.title} | Cinchfile`, description: post.description };
+  return {
+    title: `${post.title} | Cinchfile`,
+    description: post.description,
+    alternates: { canonical: `/blog/${post.slug}` },
+  };
 }
 
 export default async function BlogPostPage({
@@ -29,8 +35,28 @@ export default async function BlogPostPage({
   const post = getBlogPostBySlug(slug);
   if (!post) notFound();
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.description,
+    datePublished: post.publishedAt,
+    dateModified: post.publishedAt,
+    author: { "@type": "Organization", name: "Cinchfile" },
+    publisher: { "@type": "Organization", name: "Cinchfile", url: SITE_URL },
+    mainEntityOfPage: `${SITE_URL}/blog/${post.slug}`,
+  };
+
   return (
     <article className="max-w-2xl mx-auto px-6 py-16">
+      <JsonLdScript data={articleJsonLd} />
+      <JsonLdScript
+        data={buildBreadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Guides", path: "/blog" },
+          { name: post.title },
+        ])}
+      />
       <Link href="/blog" className="text-sm font-bold text-muted hover:text-foreground">
         ← Guides
       </Link>

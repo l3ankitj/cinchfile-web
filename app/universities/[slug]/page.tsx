@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { UNIVERSITIES, getUniversityBySlug } from "@/lib/data/universities";
 import { generateUniversityBody, generateUniversityIntro } from "@/lib/universityContent";
+import { buildBreadcrumbJsonLd, JsonLdScript } from "@/lib/jsonLd";
 
 export const dynamicParams = false;
 
@@ -21,6 +22,7 @@ export async function generateMetadata({
   return {
     title: `Printing for ${data.name} Students | Cinchfile`,
     description: data.intro ?? generateUniversityIntro(data),
+    alternates: { canonical: `/universities/${data.slug}` },
   };
 }
 
@@ -38,6 +40,13 @@ export default async function UniversityPage({
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-16">
+      <JsonLdScript
+        data={buildBreadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "University Printing", path: "/universities" },
+          { name: data.name },
+        ])}
+      />
       <h1 className="text-4xl md:text-5xl font-black tracking-tight text-foreground mb-4">
         Printing for {data.name} Students
       </h1>

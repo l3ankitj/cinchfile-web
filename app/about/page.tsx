@@ -5,6 +5,7 @@ import { Wallet, ShieldCheck, Truck } from "lucide-react";
 export const metadata: Metadata = {
   title: "About Cinchfile",
   description: "Cinchfile is a print-on-demand platform built for students — transparent pricing, quality paper, and doorstep delivery across India.",
+  alternates: { canonical: "/about" },
 };
 
 export default function AboutPage() {

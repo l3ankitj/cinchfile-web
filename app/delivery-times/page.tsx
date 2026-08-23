@@ -4,6 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Delivery Times | Cinchfile",
   description: "Typical delivery windows by region across India.",
+  alternates: { canonical: "/delivery-times" },
 };
 
 const ZONES = [

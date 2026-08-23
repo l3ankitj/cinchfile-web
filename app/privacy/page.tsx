@@ -5,6 +5,7 @@ import Image from "next/image";
 export const metadata: Metadata = {
   title: "Privacy Policy | Cinchfile",
   description: "How Cinchfile handles your files and personal data when you place a print order.",
+  alternates: { canonical: "/privacy" },
 };
 
 export default function PrivacyPage() {

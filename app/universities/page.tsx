@@ -5,6 +5,7 @@ import { UNIVERSITIES } from "@/lib/data/universities";
 export const metadata: Metadata = {
   title: "University Printing | Cinchfile",
   description: "Doorstep print delivery for students near major Indian universities.",
+  alternates: { canonical: "/universities" },
 };
 
 export default function UniversitiesIndexPage() {

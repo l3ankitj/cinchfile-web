@@ -5,6 +5,7 @@ import { GraduationCap, BookOpen, FileText, Briefcase } from "lucide-react";
 export const metadata: Metadata = {
   title: "What Students Print | Cinchfile",
   description: "Common ways students use Cinchfile — thesis submissions, exam prep, project reports, and more.",
+  alternates: { canonical: "/student-success-stories" },
 };
 
 const USE_CASES = [

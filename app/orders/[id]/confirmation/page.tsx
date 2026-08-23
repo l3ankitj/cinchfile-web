@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CheckCircle2 } from "lucide-react";
 import { createServiceClient } from "@/lib/supabase/service";
 import { formatPaise } from "@/lib/pricing";
 import { getShippingZone } from "@/lib/data/shipping-zones";
+
+export const metadata: Metadata = {
+  title: "Order Confirmation | Cinchfile",
+  robots: { index: false, follow: false },
+};
 
 export default async function OrderConfirmationPage({
   params,

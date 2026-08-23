@@ -5,6 +5,7 @@ import { BLOG_POSTS } from "@/lib/data/blog-posts";
 export const metadata: Metadata = {
   title: "Guides | Cinchfile",
   description: "Printing, binding, and paper guides for students.",
+  alternates: { canonical: "/blog" },
 };
 
 export default function BlogIndexPage() {

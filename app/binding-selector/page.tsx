@@ -4,6 +4,7 @@ import BindingSelectorForm from "./BindingSelectorForm";
 export const metadata: Metadata = {
   title: "Binding Selector | Cinchfile",
   description: "Not sure which binding to pick? Answer two questions and we'll recommend one.",
+  alternates: { canonical: "/binding-selector" },
 };
 
 export default function BindingSelectorPage() {

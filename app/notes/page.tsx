@@ -5,6 +5,7 @@ import { EXAM_NOTES } from "@/lib/data/examNotes";
 export const metadata: Metadata = {
   title: "Competitive Exam Notes Printing | Cinchfile",
   description: "Bulk notes printing for UPSC, SSC, banking, NEET, JEE, GATE, and other competitive exam preparation.",
+  alternates: { canonical: "/notes" },
 };
 
 export default function NotesIndexPage() {

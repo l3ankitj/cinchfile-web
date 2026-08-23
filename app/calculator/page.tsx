@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Print Cost Calculator | Cinchfile",
   description:
     "Estimate printing, binding, and delivery charges before you upload — the same pricing engine used at checkout.",
+  alternates: { canonical: "/calculator" },
 };
 
 export default function CalculatorPage() {

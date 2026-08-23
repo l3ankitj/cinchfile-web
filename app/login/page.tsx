@@ -5,6 +5,8 @@ import LoginForm from "./LoginForm";
 export const metadata: Metadata = {
   title: "Staff Sign In | Cinchfile",
   description: "Sign in to the Cinchfile fulfillment dashboard.",
+  alternates: { canonical: "/login" },
+  robots: { index: false, follow: false },
 };
 
 export default function LoginPage() {

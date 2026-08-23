@@ -4,6 +4,7 @@ import PageCountEstimatorForm from "./PageCountEstimatorForm";
 export const metadata: Metadata = {
   title: "Page Count Estimator | Cinchfile",
   description: "Estimate how many printed pages your document will take up before you upload.",
+  alternates: { canonical: "/page-count-estimator" },
 };
 
 export default function PageCountEstimatorPage() {

@@ -5,6 +5,7 @@ import { FileCheck, PackageCheck, ShieldCheck, Printer } from "lucide-react";
 export const metadata: Metadata = {
   title: "Quality & Trust | Cinchfile",
   description: "How we check every order before it ships — file verification, print QA, and secure packaging.",
+  alternates: { canonical: "/reviews" },
 };
 
 const CHECKS = [

@@ -5,6 +5,7 @@ import Image from "next/image";
 export const metadata: Metadata = {
   title: "Terms of Service | Cinchfile",
   description: "Terms for placing and fulfilling a print order with Cinchfile.",
+  alternates: { canonical: "/terms" },
 };
 
 export default function TermsPage() {

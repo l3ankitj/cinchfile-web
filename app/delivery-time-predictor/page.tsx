@@ -4,6 +4,7 @@ import DeliveryPredictorForm from "./DeliveryPredictorForm";
 export const metadata: Metadata = {
   title: "Delivery Time Predictor | Cinchfile",
   description: "Enter your pincode to see an estimated delivery window before you order.",
+  alternates: { canonical: "/delivery-time-predictor" },
 };
 
 export default function DeliveryTimePredictorPage() {

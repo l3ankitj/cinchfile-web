@@ -4,6 +4,7 @@ import MyOrdersForm from "./MyOrdersForm";
 export const metadata: Metadata = {
   title: "My Orders | Cinchfile",
   description: "Look up your recent print orders by mobile number.",
+  alternates: { canonical: "/my-orders" },
 };
 
 export default function MyOrdersPage() {

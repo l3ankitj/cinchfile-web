@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { COMPARISONS, getComparisonBySlug } from "@/lib/data/comparisons";
+import { buildBreadcrumbJsonLd, JsonLdScript } from "@/lib/jsonLd";
 
 export const dynamicParams = false;
 
@@ -17,7 +18,11 @@ export async function generateMetadata({
   const { slug } = await params;
   const data = getComparisonBySlug(slug);
   if (!data) return {};
-  return { title: `${data.title} | Cinchfile`, description: data.intro };
+  return {
+    title: `${data.title} | Cinchfile`,
+    description: data.intro,
+    alternates: { canonical: `/compare/${data.slug}` },
+  };
 }
 
 export default async function ComparePage({
@@ -31,6 +36,13 @@ export default async function ComparePage({
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-16">
+      <JsonLdScript
+        data={buildBreadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Compare", path: "/compare" },
+          { name: data.title },
+        ])}
+      />
       <h1 className="text-4xl md:text-5xl font-black tracking-tight text-foreground mb-4">
         {data.title}
       </h1>

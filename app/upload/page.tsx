@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Upload & Print | Cinchfile",
   description:
     "Upload your PDFs and documents, choose paper and binding, and get doorstep delivery across India.",
+  alternates: { canonical: "/upload" },
 };
 
 export default function UploadPage() {

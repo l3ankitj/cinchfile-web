@@ -5,6 +5,7 @@ import { Wallet, ShieldCheck, Truck, Layers, Clock, BadgeCheck } from "lucide-re
 export const metadata: Metadata = {
   title: "Why Cinchfile",
   description: "Transparent pricing, quality paper, and doorstep delivery — why students choose Cinchfile over a local print shop.",
+  alternates: { canonical: "/why-cinchfile" },
 };
 
 const REASONS = [

@@ -5,6 +5,7 @@ import { buildFaqJsonLd, JsonLdScript } from "@/lib/jsonLd";
 export const metadata: Metadata = {
   title: "FAQ | Cinchfile",
   description: "Answers to common questions about pricing, delivery, paper, binding, and file security.",
+  alternates: { canonical: "/faq" },
 };
 
 const FAQ_ITEMS = [
