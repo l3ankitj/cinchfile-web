@@ -17,7 +17,7 @@ export async function POST(
   const svc = createServiceClient();
   const { data: order } = await svc
     .from("orders")
-    .select("id, order_number, status, total_paise")
+    .select("id, order_number, status, payment_status, total_paise, razorpay_order_id")
     .eq("id", orderId)
     .single();
 
@@ -45,6 +45,19 @@ export async function POST(
       { error: "Upload at least one file before paying" },
       { status: 400 }
     );
+  }
+
+  // Reuse an already-open Razorpay order instead of creating a new one on
+  // every call — otherwise a retry or double-tab overwrites
+  // razorpay_order_id, orphaning a payment made against the earlier id (the
+  // webhook's exact-match lookup would then never find the order).
+  if (order.razorpay_order_id && order.payment_status === "unpaid") {
+    return NextResponse.json({
+      razorpayOrderId: order.razorpay_order_id,
+      amountPaise: order.total_paise,
+      currency: "INR",
+      keyId: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+    });
   }
 
   try {

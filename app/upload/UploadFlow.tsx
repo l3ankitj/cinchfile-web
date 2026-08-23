@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import {
   createDraftOrder,
+  getDraftOrder,
   setOrderItems,
   type OrderItemInput,
 } from "@/app/actions/orders";
@@ -17,6 +18,7 @@ import {
   type PrintType,
   type Sides,
 } from "@/lib/pricing";
+import { DRAFT_ORDER_STORAGE_KEY } from "@/lib/constants";
 import FileDropzone, { type UploadItem } from "./FileDropzone";
 import RazorpayCheckoutButton from "./RazorpayCheckoutButton";
 
@@ -58,6 +60,52 @@ export default function UploadFlow() {
   const [pricing, setPricing] = useState<OrderPricingResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [resuming, setResuming] = useState(true);
+
+  // A page reload mid-flow used to permanently orphan the draft order
+  // already inserted by createDraftOrder (and any files already uploaded to
+  // it) — resume it from localStorage instead of silently abandoning it.
+  useEffect(() => {
+    const saved = window.localStorage.getItem(DRAFT_ORDER_STORAGE_KEY);
+    if (!saved) {
+      setResuming(false);
+      return;
+    }
+    (async () => {
+      try {
+        const { id } = JSON.parse(saved) as { id: string; orderNumber: string };
+        const draft = await getDraftOrder(id);
+        if (draft && draft.status === "draft") {
+          setOrderId(draft.id);
+          setOrderNumber(draft.orderNumber);
+          if (draft.files.length > 0) {
+            setFileItems(
+              draft.files.map((f) => ({
+                localId: f.id,
+                fileId: f.id,
+                name: f.originalName,
+                size: f.byteSize,
+                status: f.status === "uploaded" ? "uploaded" : "failed",
+                error: null,
+                // Page counts aren't persisted per-file (only the aggregate
+                // ends up on order_items once settings are submitted), so a
+                // resumed file needs its page count re-entered.
+                pageCount: null,
+                pageCountSource: "manual",
+              }))
+            );
+          }
+          setStep("files");
+        } else {
+          window.localStorage.removeItem(DRAFT_ORDER_STORAGE_KEY);
+        }
+      } catch {
+        window.localStorage.removeItem(DRAFT_ORDER_STORAGE_KEY);
+      } finally {
+        setResuming(false);
+      }
+    })();
+  }, []);
 
   const uploadedCount = fileItems.filter((f) => f.status === "uploaded").length;
   const allReady = fileItems.length > 0 &&
@@ -75,6 +123,10 @@ export default function UploadFlow() {
       const result = await createDraftOrder(details);
       setOrderId(result.id);
       setOrderNumber(result.orderNumber);
+      window.localStorage.setItem(
+        DRAFT_ORDER_STORAGE_KEY,
+        JSON.stringify({ id: result.id, orderNumber: result.orderNumber })
+      );
       setStep("files");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
@@ -112,6 +164,14 @@ export default function UploadFlow() {
   const availableGsm = PAPER_OPTIONS.filter(
     (p) => printType !== "color" || p.gsm !== 65
   );
+
+  if (resuming) {
+    return (
+      <div className="rounded-2xl border border-border bg-surface shadow-card p-6 md:p-8 text-center text-muted">
+        Checking for an order in progress…
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-2xl border border-border bg-surface shadow-card p-6 md:p-8">

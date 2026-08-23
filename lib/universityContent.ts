@@ -3,19 +3,7 @@
  * lib/cityContent.ts / lib/stateContent.ts.
  */
 import type { UniversityData } from "./data/universities";
-
-function hashString(s: string): number {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) {
-    h = (h * 31 + s.charCodeAt(i)) >>> 0;
-  }
-  return h;
-}
-
-function pick<T>(options: readonly T[], ...seedParts: string[]): T {
-  const h = hashString(seedParts.join("|"));
-  return options[h % options.length];
-}
+import { pick } from "./contentTemplating";
 
 const INTRO_TEMPLATES = [
   (u: UniversityData) =>

@@ -95,6 +95,8 @@ export default function FileDropzone({
     }
     update(localId, { pageCount, pageCountSource, status: "uploading" });
 
+    let mintedFileId: string | null = null;
+
     try {
       const res = await fetch(`/api/orders/${orderId}/files/sign`, {
         method: "POST",
@@ -108,13 +110,28 @@ export default function FileDropzone({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Could not start upload");
 
+      // Track the row as soon as it exists so a failure below can clean it
+      // up — otherwise a mid-upload failure (dropped connection) leaves a
+      // "pending" order_files row nobody ever deletes, still counting
+      // against the order's file/byte quota.
+      mintedFileId = data.fileId;
+      update(localId, { fileId: data.fileId });
+
       await uploadToSignedUrl(file, data.path, data.token);
       await confirmFileUpload(data.fileId);
 
       update(localId, { status: "uploaded", fileId: data.fileId });
     } catch (err) {
+      if (mintedFileId) {
+        try {
+          await removeOrderFile(mintedFileId);
+        } catch {
+          // best-effort cleanup — surfacing the original error matters more
+        }
+      }
       update(localId, {
         status: "failed",
+        fileId: null,
         error: err instanceof Error ? err.message : "Upload failed",
       });
     }

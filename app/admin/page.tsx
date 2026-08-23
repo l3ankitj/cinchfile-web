@@ -18,15 +18,31 @@ export default function AdminPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [toast, setToast] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     void refresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- run once on mount only
   }, []);
+
+  // A thrown "Unauthorized" means the session expired while this page was
+  // already open (IdleGuard only tracks client-side inactivity, not actual
+  // token validity) — send the user back to sign in instead of failing silently.
+  function handleActionError(err: unknown) {
+    if (err instanceof Error && err.message === "Unauthorized") {
+      router.push("/login");
+      return;
+    }
+    setError(err instanceof Error ? err.message : "Something went wrong");
+    setTimeout(() => setError(null), 5000);
+  }
 
   async function refresh() {
     setLoading(true);
     try {
       setOrders(await listOrders());
+    } catch (err) {
+      handleActionError(err);
     } finally {
       setLoading(false);
     }
@@ -40,16 +56,20 @@ export default function AdminPage() {
   }
 
   async function handleExport() {
-    const csv = await exportOrdersCsv();
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `cinchfile-orders-${new Date().toISOString().slice(0, 10)}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-    setToast("Orders exported");
-    setTimeout(() => setToast(null), 3000);
+    try {
+      const csv = await exportOrdersCsv();
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `cinchfile-orders-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      setToast("Orders exported");
+      setTimeout(() => setToast(null), 3000);
+    } catch (err) {
+      handleActionError(err);
+    }
   }
 
   const filtered = useMemo(() => {
@@ -92,6 +112,11 @@ export default function AdminPage() {
         {toast && (
           <div className="mb-4 rounded-lg bg-success/10 text-success text-sm font-bold px-4 py-2">
             {toast}
+          </div>
+        )}
+        {error && (
+          <div role="alert" className="mb-4 rounded-lg bg-danger/10 text-danger text-sm font-bold px-4 py-2">
+            {error}
           </div>
         )}
 

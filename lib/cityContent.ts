@@ -10,25 +10,7 @@
  */
 import type { CityData } from "./data/cities";
 import type { CityServiceInfo } from "./data/cityServices";
-
-function hashString(s: string): number {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) {
-    h = (h * 31 + s.charCodeAt(i)) >>> 0;
-  }
-  return h;
-}
-
-function pick<T>(options: readonly T[], ...seedParts: string[]): T {
-  const h = hashString(seedParts.join("|"));
-  return options[h % options.length];
-}
-
-function joinList(items: string[], max = 3): string {
-  const shown = items.slice(0, max);
-  if (shown.length <= 1) return shown.join("");
-  return `${shown.slice(0, -1).join(", ")} and ${shown[shown.length - 1]}`;
-}
+import { pick, joinList } from "./contentTemplating";
 
 const HUB_LEAD_TEMPLATES = [
   (c: CityData) =>

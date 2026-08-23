@@ -21,6 +21,9 @@ export const IDLE_TIMEOUT_MS = 15 * 60 * 1000;
 /** Show warning before sign-out (ms). */
 export const IDLE_WARNING_MS = 14 * 60 * 1000;
 
+/** localStorage key used to resume a draft order after a page reload mid-checkout. */
+export const DRAFT_ORDER_STORAGE_KEY = "cinchfile_draft_order";
+
 /** Accepted upload MIME types / extensions. */
 export const ACCEPTED_UPLOAD_EXTENSIONS = [
   "pdf",

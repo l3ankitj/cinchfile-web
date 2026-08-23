@@ -3,7 +3,12 @@
 import { createServiceClient } from "@/lib/supabase/service";
 import { createClient } from "@/lib/supabase/server";
 import { logAudit } from "@/lib/audit";
-import { SIGNED_DOWNLOAD_URL_TTL_SECONDS, STORAGE_BUCKET } from "@/lib/constants";
+import {
+  MAX_FILE_BYTES,
+  MAX_TOTAL_BYTES,
+  SIGNED_DOWNLOAD_URL_TTL_SECONDS,
+  STORAGE_BUCKET,
+} from "@/lib/constants";
 import {
   calculateOrderTotal,
   type PricingItemInput,
@@ -143,11 +148,27 @@ export async function confirmFileUpload(fileId: string): Promise<void> {
   const svc = createServiceClient();
   const { data: fileRow, error } = await svc
     .from("order_files")
-    .select("id, storage_path, byte_size")
+    .select("id, order_id, storage_path, byte_size")
     .eq("id", fileId)
     .single();
 
   if (error || !fileRow) throw new Error("File not found");
+
+  // Mirrors the guard in removeOrderFile: a slow upload that finishes after
+  // the order has already left "draft" (e.g. checkout completed in another
+  // tab while this upload was still in flight) must not silently attach a
+  // file to an order whose price is already locked in.
+  const { data: order } = await svc
+    .from("orders")
+    .select("status")
+    .eq("id", fileRow.order_id)
+    .single();
+
+  if (order?.status !== "draft") {
+    await svc.storage.from(STORAGE_BUCKET).remove([fileRow.storage_path]);
+    await svc.from("order_files").delete().eq("id", fileId);
+    throw new Error("This order can no longer be edited");
+  }
 
   const slashIndex = fileRow.storage_path.lastIndexOf("/");
   const dir = fileRow.storage_path.slice(0, slashIndex);
@@ -164,11 +185,38 @@ export async function confirmFileUpload(fileId: string): Promise<void> {
     throw new Error("Upload could not be verified. Please try again.");
   }
 
+  // The size caps checked at sign-time trust the client-reported byteSize —
+  // re-verify against the real, server-observed size now that it's known,
+  // and refuse (deleting the object) rather than silently accepting an
+  // oversized file.
+  const realSize = found.metadata?.size ?? fileRow.byte_size;
+
+  if (realSize > MAX_FILE_BYTES) {
+    await svc.storage.from(STORAGE_BUCKET).remove([fileRow.storage_path]);
+    await svc.from("order_files").delete().eq("id", fileId);
+    throw new Error(`File exceeds the ${MAX_FILE_BYTES / (1024 * 1024)}MB per-file limit`);
+  }
+
+  const { data: otherFiles } = await svc
+    .from("order_files")
+    .select("byte_size")
+    .eq("order_id", fileRow.order_id)
+    .eq("status", "uploaded")
+    .neq("id", fileId);
+
+  const otherTotalBytes = (otherFiles ?? []).reduce((sum, f) => sum + f.byte_size, 0);
+
+  if (otherTotalBytes + realSize > MAX_TOTAL_BYTES) {
+    await svc.storage.from(STORAGE_BUCKET).remove([fileRow.storage_path]);
+    await svc.from("order_files").delete().eq("id", fileId);
+    throw new Error(`Orders are limited to ${MAX_TOTAL_BYTES / (1024 * 1024 * 1024)}GB total`);
+  }
+
   await svc
     .from("order_files")
     .update({
       status: "uploaded",
-      byte_size: found.metadata?.size ?? fileRow.byte_size,
+      byte_size: realSize,
     })
     .eq("id", fileId);
 }

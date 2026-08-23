@@ -10,6 +10,13 @@ const buckets = new Map<string, { count: number; resetAt: number }>();
 // long-lived Fluid Compute instance.
 const MAX_BUCKETS = 5000;
 
+/** Drops only expired entries, so active counters near their limit are never reset early. */
+function evictExpired(now: number) {
+  for (const [key, bucket] of buckets) {
+    if (bucket.resetAt <= now) buckets.delete(key);
+  }
+}
+
 export function checkRateLimit(
   key: string,
   limit: number,
@@ -19,7 +26,7 @@ export function checkRateLimit(
   const existing = buckets.get(key);
 
   if (!existing || existing.resetAt <= now) {
-    if (buckets.size >= MAX_BUCKETS) buckets.clear();
+    if (buckets.size >= MAX_BUCKETS) evictExpired(now);
     buckets.set(key, { count: 1, resetAt: now + windowMs });
     return true;
   }

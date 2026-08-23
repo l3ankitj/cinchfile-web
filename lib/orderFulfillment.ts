@@ -28,7 +28,11 @@ export async function markOrderPaid(
     return { alreadyProcessed: true };
   }
 
-  await svc
+  // Conditional update guards against the client-verify call and the webhook
+  // racing each other for the same payment: only the caller whose update
+  // actually matches a still-unpaid row proceeds past this point, so the
+  // status event / audit log / emails below never fire twice.
+  const { data: updated } = await svc
     .from("orders")
     .update({
       payment_status: "paid",
@@ -37,7 +41,13 @@ export async function markOrderPaid(
       razorpay_signature: razorpaySignature,
       paid_at: new Date().toISOString(),
     })
-    .eq("id", orderId);
+    .eq("id", orderId)
+    .eq("payment_status", "unpaid")
+    .select("id");
+
+  if (!updated || updated.length === 0) {
+    return { alreadyProcessed: true };
+  }
 
   await svc.from("order_status_events").insert({
     order_id: orderId,

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { formatPaise } from "@/lib/pricing";
+import { DRAFT_ORDER_STORAGE_KEY } from "@/lib/constants";
 
 declare global {
   interface Window {
@@ -67,6 +68,7 @@ export default function RazorpayCheckoutButton({
               body: JSON.stringify(response),
             });
             if (!verifyRes.ok) throw new Error("Payment could not be verified");
+            window.localStorage.removeItem(DRAFT_ORDER_STORAGE_KEY);
             router.push(`/orders/${orderId}/confirmation`);
           } catch (err) {
             setError(err instanceof Error ? err.message : "Payment verification failed");
