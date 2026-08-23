@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ShieldCheck,
@@ -11,6 +12,11 @@ import {
 } from "lucide-react";
 import FaqAccordion from "@/app/components/FaqAccordion";
 import { formatPaise, RATE_TABLE_PAISE } from "@/lib/pricing";
+import { buildFaqJsonLd, JsonLdScript } from "@/lib/jsonLd";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 const FAQ_ITEMS = [
   {
@@ -43,6 +49,7 @@ const FAQ_ITEMS = [
 export default function Home() {
   return (
     <div className="flex flex-col gap-24 pb-24">
+      <JsonLdScript data={buildFaqJsonLd(FAQ_ITEMS)} />
       {/* Hero */}
       <section className="px-6 pt-16 max-w-5xl mx-auto text-center">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-muted border border-border text-muted text-xs font-bold mb-8">

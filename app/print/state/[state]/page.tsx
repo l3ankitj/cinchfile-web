@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { MapPin } from "lucide-react";
 import { STATES, getStateBySlug } from "@/lib/data/states";
 import { generateStateBody, generateStateIntro } from "@/lib/stateContent";
+import { buildBreadcrumbJsonLd, JsonLdScript } from "@/lib/jsonLd";
 
 export const dynamicParams = false;
 
@@ -22,6 +23,7 @@ export async function generateMetadata({
   return {
     title: `Online Printing in ${data.name} | Cinchfile`,
     description: data.intro ?? generateStateIntro(data),
+    alternates: { canonical: `/print/state/${data.slug}` },
   };
 }
 
@@ -39,6 +41,13 @@ export default async function StatePage({
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-16">
+      <JsonLdScript
+        data={buildBreadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Cities We Deliver To", path: "/print" },
+          { name: data.name },
+        ])}
+      />
       <h1 className="text-4xl md:text-5xl font-black tracking-tight text-foreground mb-4">
         Online Printing in {data.name}
       </h1>

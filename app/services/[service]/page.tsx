@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CheckCircle2 } from "lucide-react";
 import { SERVICES, getServiceBySlug } from "@/lib/data/services";
+import { buildBreadcrumbJsonLd, JsonLdScript } from "@/lib/jsonLd";
+import { SITE_URL } from "@/lib/siteConfig";
 
 export const dynamicParams = false;
 
@@ -21,6 +23,7 @@ export async function generateMetadata({
   return {
     title: `${data.name} | Cinchfile`,
     description: data.shortDescription,
+    alternates: { canonical: `/services/${data.slug}` },
   };
 }
 
@@ -33,8 +36,26 @@ export default async function ServicePage({
   const data = getServiceBySlug(service);
   if (!data) notFound();
 
+  const serviceJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: data.name,
+    description: data.shortDescription,
+    provider: { "@type": "Organization", name: "Cinchfile", url: SITE_URL },
+    areaServed: "IN",
+    url: `${SITE_URL}/services/${data.slug}`,
+  };
+
   return (
     <div className="max-w-3xl mx-auto px-6 py-16">
+      <JsonLdScript data={serviceJsonLd} />
+      <JsonLdScript
+        data={buildBreadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Services", path: "/services" },
+          { name: data.name },
+        ])}
+      />
       <p className="text-sm font-bold text-accent-text uppercase tracking-wide mb-3">
         {data.priceNote}
       </p>

@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { CITIES } from "@/lib/data/cities";
 import { STATES } from "@/lib/data/states";
 import { SERVICES } from "@/lib/data/services";
+import { SITE_URL, SITE_NAME, SITE_TAGLINE, SITE_DESCRIPTION } from "@/lib/siteConfig";
 import SiteHeader from "@/app/components/SiteHeader";
 import "./globals.css";
 
@@ -20,9 +21,54 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Cinchfile | Online Printing for Students",
-  description:
-    "Upload your PDFs, choose paper and binding, and get doorstep delivery across India. Transparent per-page pricing, no shop visits.",
+  metadataBase: new URL(SITE_URL),
+  // No title `template` here — every page in this codebase already sets a
+  // complete title including the "| Cinchfile" suffix itself, so a template
+  // would double it (e.g. "...| Cinchfile | Cinchfile"). `default` is the
+  // fallback for the few routes (the homepage) that don't set their own.
+  title: `${SITE_NAME} | ${SITE_TAGLINE}`,
+  description: SITE_DESCRIPTION,
+  keywords: [
+    "online printing India",
+    "PDF printing",
+    "thesis printing",
+    "spiral binding online",
+    "hard binding online",
+    "college notes printing",
+    "doorstep printing",
+    "print delivery India",
+  ],
+  openGraph: {
+    // No `url` here — Next.js metadata merges shallowly per top-level key,
+    // so any page that doesn't define its own `openGraph` would otherwise
+    // inherit this one wholesale, including a URL pointing at the homepage.
+    // Pages that want a specific og:url set it themselves; the rest simply
+    // omit it (crawlers fall back to the actual fetched URL).
+    type: "website",
+    locale: "en_IN",
+    siteName: SITE_NAME,
+    title: `${SITE_NAME} | ${SITE_TAGLINE}`,
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_NAME} | ${SITE_TAGLINE}`,
+    description: SITE_DESCRIPTION,
+  },
+  // Deliberately no site-wide `alternates.canonical` here for the same
+  // reason — it would leak "/" onto every page that doesn't set its own.
+  // The homepage sets its own below; other indexable pages set theirs in
+  // their generateMetadata/metadata export.
+};
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: SITE_NAME,
+  url: SITE_URL,
+  logo: `${SITE_URL}/logo.png`,
+  description: SITE_DESCRIPTION,
+  sameAs: [],
 };
 
 export default function RootLayout({
@@ -35,6 +81,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased bg-background text-foreground flex flex-col font-sans`}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
         <SiteHeader />
 
         <main className="flex-grow pt-24">{children}</main>

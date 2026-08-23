@@ -5,6 +5,7 @@ import { MapPin } from "lucide-react";
 import { CITIES, getCityBySlug } from "@/lib/data/cities";
 import { CITY_SERVICES, getCityServiceBySlug } from "@/lib/data/cityServices";
 import { generateCityServiceBody, generateCityServiceIntro } from "@/lib/cityContent";
+import { buildBreadcrumbJsonLd, JsonLdScript } from "@/lib/jsonLd";
 
 export const dynamicParams = false;
 
@@ -30,6 +31,7 @@ export async function generateMetadata({
   return {
     title: `${serviceData.label} in ${cityData.name} | Cinchfile`,
     description: generateCityServiceIntro(cityData, serviceData),
+    alternates: { canonical: `/print/${cityData.slug}/${serviceData.slug}` },
   };
 }
 
@@ -48,6 +50,14 @@ export default async function CityServicePage({
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-16">
+      <JsonLdScript
+        data={buildBreadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Cities We Deliver To", path: "/print" },
+          { name: cityData.name, path: `/print/${cityData.slug}` },
+          { name: serviceData.label },
+        ])}
+      />
       <p className="text-sm font-bold text-accent-text uppercase tracking-wide mb-3 flex items-center gap-1.5">
         <MapPin size={14} /> {cityData.name}, {cityData.state}
       </p>

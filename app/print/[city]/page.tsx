@@ -5,6 +5,7 @@ import { MapPin, Truck, GraduationCap } from "lucide-react";
 import { CITIES, getCityBySlug } from "@/lib/data/cities";
 import { CITY_SERVICES } from "@/lib/data/cityServices";
 import { generateCityBody, generateCityIntro } from "@/lib/cityContent";
+import { buildBreadcrumbJsonLd, JsonLdScript } from "@/lib/jsonLd";
 
 export const dynamicParams = false;
 
@@ -23,6 +24,7 @@ export async function generateMetadata({
   return {
     title: `Online Printing in ${data.name} | Cinchfile`,
     description: data.intro ?? generateCityIntro(data),
+    alternates: { canonical: `/print/${data.slug}` },
   };
 }
 
@@ -42,6 +44,13 @@ export default async function CityPage({
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-16">
+      <JsonLdScript
+        data={buildBreadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Cities We Deliver To", path: "/print" },
+          { name: data.name },
+        ])}
+      />
       <p className="text-sm font-bold text-accent-text uppercase tracking-wide mb-3 flex items-center gap-1.5">
         <MapPin size={14} /> {data.state}
       </p>

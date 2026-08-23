@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import FaqAccordion from "@/app/components/FaqAccordion";
+import { buildFaqJsonLd, JsonLdScript } from "@/lib/jsonLd";
 
 export const metadata: Metadata = {
   title: "FAQ | Cinchfile",
@@ -57,6 +58,7 @@ const FAQ_ITEMS = [
 export default function FaqPage() {
   return (
     <div className="max-w-2xl mx-auto px-6 py-16">
+      <JsonLdScript data={buildFaqJsonLd(FAQ_ITEMS)} />
       <h1 className="text-4xl font-black tracking-tight text-foreground mb-4 text-center">
         Frequently Asked Questions
       </h1>

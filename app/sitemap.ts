@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { SITE_URL } from "@/lib/siteConfig";
 import { CITIES } from "@/lib/data/cities";
 import { CITY_SERVICES } from "@/lib/data/cityServices";
 import { STATES } from "@/lib/data/states";
@@ -36,7 +37,7 @@ const STATIC_PATHS = [
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cinchfile.com";
+  const base = SITE_URL;
   const now = new Date();
 
   const entries: MetadataRoute.Sitemap = STATIC_PATHS.map((path) => ({
