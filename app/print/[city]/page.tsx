@@ -42,7 +42,7 @@ export default async function CityPage({
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-16">
-      <p className="text-sm font-bold text-accent uppercase tracking-wide mb-3 flex items-center gap-1.5">
+      <p className="text-sm font-bold text-accent-text uppercase tracking-wide mb-3 flex items-center gap-1.5">
         <MapPin size={14} /> {data.state}
       </p>
       <h1 className="text-4xl md:text-5xl font-black tracking-tight text-foreground mb-4">
@@ -70,7 +70,7 @@ export default async function CityPage({
       {universities.length > 0 && (
         <div className="mb-12">
           <h2 className="text-xl font-bold text-foreground mb-3 flex items-center gap-2">
-            <GraduationCap size={20} className="text-accent" /> Colleges &amp; Universities Served
+            <GraduationCap size={20} className="text-accent-text" /> Colleges &amp; Universities Served
           </h2>
           <div className="flex flex-wrap gap-2">
             {universities.map((u) => (

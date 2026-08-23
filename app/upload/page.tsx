@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function UploadPage() {
   return (
     <div className="max-w-3xl mx-auto px-6 py-16">
-      <p className="text-sm font-bold text-accent uppercase tracking-wide mb-3">
+      <p className="text-sm font-bold text-accent-text uppercase tracking-wide mb-3">
         Start Printing
       </p>
       <h1 className="text-4xl md:text-5xl font-black tracking-tight text-foreground mb-4">

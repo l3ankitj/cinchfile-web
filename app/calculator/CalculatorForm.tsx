@@ -256,7 +256,7 @@ export default function CalculatorForm() {
               </span>
             </div>
             <div className="rounded-xl bg-surface-muted px-4 py-3 flex items-center gap-2 text-sm text-muted">
-              <Truck size={16} className="text-accent shrink-0" />
+              <Truck size={16} className="text-accent-text shrink-0" />
               Delivery to {result.shipping.zoneName} in {result.shipping.etaMinDays}–
               {result.shipping.etaMaxDays} days
             </div>

@@ -1,14 +1,16 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import LoginForm from "./LoginForm";
+
+export const metadata: Metadata = {
+  title: "Staff Sign In | Cinchfile",
+  description: "Sign in to the Cinchfile fulfillment dashboard.",
+};
 
 export default function LoginPage() {
   return (
     <Suspense
-      fallback={
-        <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-500">
-          Loading…
-        </div>
-      }
+      fallback={<div className="max-w-md mx-auto px-6 py-24 text-center text-muted">Loading…</div>}
     >
       <LoginForm />
     </Suspense>

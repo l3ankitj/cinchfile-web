@@ -34,7 +34,7 @@ export default async function BlogPostPage({
       <Link href="/blog" className="text-sm font-bold text-muted hover:text-foreground">
         ← Guides
       </Link>
-      <p className="text-xs font-bold text-accent uppercase tracking-wide mt-4 mb-2">
+      <p className="text-xs font-bold text-accent-text uppercase tracking-wide mt-4 mb-2">
         {post.category}
       </p>
       <h1 className="text-3xl md:text-4xl font-black tracking-tight text-foreground mb-3">

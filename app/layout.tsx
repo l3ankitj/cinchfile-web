@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { CITIES } from "@/lib/data/cities";
 import { STATES } from "@/lib/data/states";
 import { SERVICES } from "@/lib/data/services";
+import SiteHeader from "@/app/components/SiteHeader";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -24,14 +25,6 @@ export const metadata: Metadata = {
     "Upload your PDFs, choose paper and binding, and get doorstep delivery across India. Transparent per-page pricing, no shop visits.",
 };
 
-const NAV_LINKS = [
-  { href: "/pricing", label: "Pricing" },
-  { href: "/calculator", label: "Calculator" },
-  { href: "/blog", label: "Guides" },
-  { href: "/track", label: "Track Order" },
-  { href: "/my-orders", label: "My Orders" },
-];
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -42,49 +35,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased bg-background text-foreground flex flex-col font-sans`}
       >
-        <header className="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-6xl z-50">
-          <nav
-            className="bg-surface/70 backdrop-blur-xl border border-border shadow-[0_8px_32px_rgba(18,22,42,0.06)] rounded-[2rem] px-6 py-4 flex items-center justify-between gap-4"
-            aria-label="Primary"
-          >
-            <Link href="/" className="flex items-center gap-3 group shrink-0">
-              <div className="relative w-9 h-9 transition-transform group-hover:scale-110">
-                <Image src="/logo.png" alt="" fill sizes="36px" className="object-contain" priority />
-              </div>
-              <span className="font-black text-2xl tracking-tighter text-foreground hidden sm:inline">
-                Cinchfile<span className="text-accent">.</span>
-              </span>
-            </Link>
-
-            <div className="hidden lg:flex items-center gap-6 text-sm font-bold text-muted">
-              {NAV_LINKS.map((l) => (
-                <Link
-                  key={l.href}
-                  href={l.href}
-                  className="hover:text-primary transition-colors focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-primary rounded"
-                >
-                  {l.label}
-                </Link>
-              ))}
-            </div>
-
-            <div className="flex items-center gap-3 md:gap-4 shrink-0">
-              <Link
-                href="/login"
-                className="hidden sm:inline text-sm font-bold text-muted hover:text-primary transition-colors focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-primary rounded"
-              >
-                Sign in
-              </Link>
-
-              <Link
-                href="/upload"
-                className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-bold hover:bg-primary-hover transition-colors shadow-md focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-primary"
-              >
-                Print Now
-              </Link>
-            </div>
-          </nav>
-        </header>
+        <SiteHeader />
 
         <main className="flex-grow pt-24">{children}</main>
 

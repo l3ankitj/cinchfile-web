@@ -35,7 +35,7 @@ export default async function ServicePage({
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-16">
-      <p className="text-sm font-bold text-accent uppercase tracking-wide mb-3">
+      <p className="text-sm font-bold text-accent-text uppercase tracking-wide mb-3">
         {data.priceNote}
       </p>
       <h1 className="text-4xl md:text-5xl font-black tracking-tight text-foreground mb-4">
@@ -46,7 +46,7 @@ export default async function ServicePage({
       <ul className="grid sm:grid-cols-2 gap-3 mb-10">
         {data.bulletPoints.map((b) => (
           <li key={b} className="flex items-start gap-2 text-sm">
-            <CheckCircle2 size={16} className="text-accent shrink-0 mt-0.5" />
+            <CheckCircle2 size={16} className="text-accent-text shrink-0 mt-0.5" />
             <span className="text-foreground">{b}</span>
           </li>
         ))}

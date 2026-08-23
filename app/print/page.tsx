@@ -49,7 +49,7 @@ export default function PrintCitiesIndexPage() {
                   href={`/print/${c.slug}`}
                   className="flex items-center gap-1.5 rounded-full border border-border bg-surface px-3.5 py-1.5 text-sm font-bold text-foreground hover:border-primary hover:text-primary transition-colors"
                 >
-                  <MapPin size={12} className="text-accent" /> {c.name}
+                  <MapPin size={12} className="text-accent-text" /> {c.name}
                 </Link>
               ))}
             </div>
@@ -65,7 +65,7 @@ export default function PrintCitiesIndexPage() {
             href={`/print/state/${s.slug}`}
             className="flex items-center gap-2 rounded-xl border border-border bg-surface px-4 py-3 font-bold text-foreground hover:border-primary transition-colors"
           >
-            <MapPin size={16} className="text-accent" /> {s.name}
+            <MapPin size={16} className="text-accent-text" /> {s.name}
           </Link>
         ))}
       </div>

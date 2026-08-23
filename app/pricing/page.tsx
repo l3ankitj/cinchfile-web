@@ -24,7 +24,7 @@ const BINDING_LABELS: Record<string, string> = {
 export default function PricingPage() {
   return (
     <div className="max-w-5xl mx-auto px-6 py-16">
-      <p className="text-sm font-bold text-accent uppercase tracking-wide mb-3">
+      <p className="text-sm font-bold text-accent-text uppercase tracking-wide mb-3">
         Transparent Rates
       </p>
       <h1 className="text-4xl md:text-5xl font-black tracking-tight text-foreground mb-4">
@@ -98,7 +98,7 @@ export default function PricingPage() {
               className="flex items-center justify-between rounded-xl border border-border bg-surface px-5 py-4 shadow-card"
             >
               <span className="font-bold text-foreground">{label}</span>
-              <span className="text-accent font-black">
+              <span className="text-accent-text font-black">
                 {formatPaise(BINDING_COST_PAISE[key as keyof typeof BINDING_COST_PAISE])}
                 <span className="text-muted font-medium text-sm">/copy</span>
               </span>
@@ -106,7 +106,7 @@ export default function PricingPage() {
           ))}
           <div className="flex items-center justify-between rounded-xl border border-border bg-surface px-5 py-4 shadow-card">
             <span className="font-bold text-foreground">Handling fee</span>
-            <span className="text-accent font-black">
+            <span className="text-accent-text font-black">
               {formatPaise(HANDLING_FEE_PAISE)}
               <span className="text-muted font-medium text-sm">/order</span>
             </span>

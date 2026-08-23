@@ -46,7 +46,7 @@ export default function Home() {
       {/* Hero */}
       <section className="px-6 pt-16 max-w-5xl mx-auto text-center">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-muted border border-border text-muted text-xs font-bold mb-8">
-          <ShieldCheck size={14} className="text-accent" />
+          <ShieldCheck size={14} className="text-accent-text" />
           <span>256-bit SSL · Razorpay Secure Checkout</span>
         </div>
 
@@ -88,7 +88,7 @@ export default function Home() {
 
       {/* Wholesale comparison */}
       <section className="px-6 max-w-5xl mx-auto w-full">
-        <p className="text-sm font-bold text-accent uppercase tracking-wide text-center mb-2">
+        <p className="text-sm font-bold text-accent-text uppercase tracking-wide text-center mb-2">
           Wholesale rates
         </p>
         <h2 className="text-3xl md:text-4xl font-black text-foreground text-center mb-3">
@@ -153,7 +153,7 @@ export default function Home() {
 
       {/* Pricing preview */}
       <section className="px-6 max-w-6xl mx-auto w-full">
-        <p className="text-sm font-bold text-accent uppercase tracking-wide text-center mb-2">
+        <p className="text-sm font-bold text-accent-text uppercase tracking-wide text-center mb-2">
           Pricing
         </p>
         <h2 className="text-3xl md:text-4xl font-black text-foreground text-center mb-3">
@@ -196,7 +196,7 @@ export default function Home() {
 
       {/* How it works */}
       <section className="px-6 max-w-5xl mx-auto w-full">
-        <p className="text-sm font-bold text-accent uppercase tracking-wide text-center mb-2">
+        <p className="text-sm font-bold text-accent-text uppercase tracking-wide text-center mb-2">
           How it works
         </p>
         <h2 className="text-3xl md:text-4xl font-black text-foreground text-center mb-12">
@@ -223,7 +223,7 @@ export default function Home() {
 
       {/* FAQ */}
       <section className="px-6 max-w-2xl mx-auto w-full">
-        <p className="text-sm font-bold text-accent uppercase tracking-wide text-center mb-2">
+        <p className="text-sm font-bold text-accent-text uppercase tracking-wide text-center mb-2">
           Questions
         </p>
         <h2 className="text-3xl font-black text-foreground text-center mb-8">
@@ -312,7 +312,7 @@ function PricingCard({
       <ul className="space-y-2 mb-6 text-sm">
         {features.map((f) => (
           <li key={f} className="flex items-center gap-2">
-            <span className={featured ? "text-white" : "text-accent"}>✓</span> {f}
+            <span className={featured ? "text-white" : "text-accent-text"}>✓</span> {f}
           </li>
         ))}
       </ul>

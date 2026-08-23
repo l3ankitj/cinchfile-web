@@ -178,7 +178,7 @@ export default function FileDropzone({
           isDragging ? "border-primary bg-surface-muted" : "border-border bg-surface"
         }`}
       >
-        <UploadCloud className="mx-auto mb-3 text-accent" size={32} />
+        <UploadCloud className="mx-auto mb-3 text-accent-text" size={32} />
         <p className="font-bold text-foreground">
           Drag &amp; drop files here or click to browse
         </p>

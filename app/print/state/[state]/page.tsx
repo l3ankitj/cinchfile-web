@@ -50,7 +50,7 @@ export default async function StatePage({
             key={c}
             className="px-3 py-1.5 rounded-full bg-surface-muted text-sm font-bold text-foreground flex items-center gap-1"
           >
-            <MapPin size={12} className="text-accent" /> {c}
+            <MapPin size={12} className="text-accent-text" /> {c}
           </span>
         ))}
       </div>

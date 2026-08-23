@@ -47,22 +47,20 @@ export default function LoginForm() {
 
   if (!supabase) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-500">
-        Loading…
-      </div>
+      <div className="max-w-md mx-auto px-6 py-24 text-center text-muted">Loading…</div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
-      <div className="w-full max-w-md rounded-2xl bg-white p-10 shadow-xl border border-slate-200">
-        <h1 className="text-2xl font-bold text-slate-900 mb-2">Staff sign in</h1>
-        <p className="text-slate-500 text-sm mb-8">
+    <div className="max-w-md mx-auto px-6 py-16">
+      <div className="rounded-2xl border border-border bg-surface shadow-card p-8 md:p-10">
+        <h1 className="text-2xl font-black text-foreground mb-2">Staff sign in</h1>
+        <p className="text-muted text-sm mb-8">
           Access the Cinchfile fulfillment dashboard.
         </p>
         <form onSubmit={(e) => void onSubmit(e)} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-1">
+            <label htmlFor="email" className="block text-sm font-bold text-foreground mb-1.5">
               Email
             </label>
             <input
@@ -73,11 +71,11 @@ export default function LoginForm() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:outline focus:outline-2 focus:outline-offset-0 focus:outline-blue-500/30"
+              className="input"
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-semibold text-slate-700 mb-1">
+            <label htmlFor="password" className="block text-sm font-bold text-foreground mb-1.5">
               Password
             </label>
             <input
@@ -88,26 +86,22 @@ export default function LoginForm() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:outline focus:outline-2 focus:outline-offset-0 focus:outline-blue-500/30"
+              className="input"
             />
           </div>
           {error && (
-            <p className="text-sm text-red-600" role="alert">
+            <p className="text-sm text-danger font-medium" role="alert">
               {error}
             </p>
           )}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 rounded-xl bg-slate-900 text-white font-bold hover:bg-blue-600 transition-colors disabled:opacity-50 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-blue-600"
-          >
+          <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-50">
             {loading ? "Signing in…" : "Sign in"}
           </button>
         </form>
         <p className="mt-8 text-center text-sm">
           <Link
             href="/"
-            className="text-blue-600 font-semibold hover:underline focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-blue-600 rounded"
+            className="text-primary font-bold hover:underline focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-primary rounded"
           >
             ← Back to home
           </Link>

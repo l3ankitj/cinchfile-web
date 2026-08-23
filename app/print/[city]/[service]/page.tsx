@@ -48,7 +48,7 @@ export default async function CityServicePage({
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-16">
-      <p className="text-sm font-bold text-accent uppercase tracking-wide mb-3 flex items-center gap-1.5">
+      <p className="text-sm font-bold text-accent-text uppercase tracking-wide mb-3 flex items-center gap-1.5">
         <MapPin size={14} /> {cityData.name}, {cityData.state}
       </p>
       <h1 className="text-4xl md:text-5xl font-black tracking-tight text-foreground mb-4">

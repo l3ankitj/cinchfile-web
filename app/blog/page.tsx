@@ -21,7 +21,7 @@ export default function BlogIndexPage() {
             href={`/blog/${p.slug}`}
             className="block rounded-xl border border-border bg-surface p-5 hover:border-primary transition-colors"
           >
-            <p className="text-xs font-bold text-accent uppercase tracking-wide mb-1">
+            <p className="text-xs font-bold text-accent-text uppercase tracking-wide mb-1">
               {p.category}
             </p>
             <h2 className="font-bold text-foreground mb-1">{p.title}</h2>
