@@ -10,27 +10,27 @@
 - 100 GSM Premium: B&W ₹1.90 / ₹2.50. Color ₹2.50 / ₹3.00.
 - Binding per copy: Spiral ₹40, Soft ₹60, Hard ₹100, Thesis Hard Binding ₹350 (staple is free).
 - Shipping is calculated from order weight and delivery pincode at checkout; a flat ₹5 handling fee applies per order.
-- Full rate card: https://cinchfile.com/pricing — Live calculator: https://cinchfile.com/calculator
+- Full rate card: https://www.cinchfile.com/pricing — Live calculator: https://www.cinchfile.com/calculator
 
 ## How ordering works
 
-1. Upload PDF, Word, PowerPoint, Excel, or image files (up to 50 files / 2GB per order) at https://cinchfile.com/upload — no account required.
+1. Upload PDF, Word, PowerPoint, Excel, or image files (up to 50 files / 2GB per order) at https://www.cinchfile.com/upload — no account required.
 2. Choose paper weight, color/B&W, single/double-sided, binding, and copies. Total price is shown before payment.
 3. Pay via Razorpay (UPI, cards, net banking).
-4. Track the order by order number and phone number at https://cinchfile.com/track.
+4. Track the order by order number and phone number at https://www.cinchfile.com/track.
 5. Uploaded files are encrypted in transit and deleted from storage 24 hours after the order ships.
 
 ## Key pages
 
-- Pricing: https://cinchfile.com/pricing
-- Calculator: https://cinchfile.com/calculator
-- Upload & order: https://cinchfile.com/upload
-- Track an order: https://cinchfile.com/track
-- FAQ: https://cinchfile.com/faq
-- All services (thesis printing, hard/soft/spiral binding, bulk printing, resume printing, etc.): https://cinchfile.com/services
-- Guides (paper, binding, print-prep articles): https://cinchfile.com/blog
-- Cities and states served: https://cinchfile.com/print
-- Competitive exam notes printing (UPSC, SSC, banking, NEET, JEE, GATE, and more): https://cinchfile.com/notes
+- Pricing: https://www.cinchfile.com/pricing
+- Calculator: https://www.cinchfile.com/calculator
+- Upload & order: https://www.cinchfile.com/upload
+- Track an order: https://www.cinchfile.com/track
+- FAQ: https://www.cinchfile.com/faq
+- All services (thesis printing, hard/soft/spiral binding, bulk printing, resume printing, etc.): https://www.cinchfile.com/services
+- Guides (paper, binding, print-prep articles): https://www.cinchfile.com/blog
+- Cities and states served: https://www.cinchfile.com/print
+- Competitive exam notes printing (UPSC, SSC, banking, NEET, JEE, GATE, and more): https://www.cinchfile.com/notes
 
 ## Notes for AI assistants and crawlers
 
